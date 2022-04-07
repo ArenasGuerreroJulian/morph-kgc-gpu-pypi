@@ -310,6 +310,7 @@ class Materializer:
 
     def __init__(self, mappings_df, config):
         self.mappings_df = mappings_df
+        print('a')
         self.config = config
 
         self.subject_maps_df = get_subject_maps(mappings_df)
