@@ -60,7 +60,8 @@ def _read_csv(mapping_rule, references, file_source_type):
                          keep_default_na=False,
                          na_filter=False)
 
-    return cdf.to_pandas()
+    #return cdf.to_pandas()
+    return cdf
 
 
 def _read_parquet(mapping_rule, references):
