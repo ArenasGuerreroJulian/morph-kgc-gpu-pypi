@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import elementpath
 import xml.etree.ElementTree as ET
+import cudf
 
 from jsonpath import JSONPath
 
@@ -50,6 +51,8 @@ def get_file_data(mapping_rule, references):
 
 def _read_csv(mapping_rule, references, file_source_type):
     delimiter = ',' if file_source_type == 'CSV' else '\t'
+
+    cdf = cudf.read_csv(str(mapping_rule['data_source']))
 
     return pd.read_table(str(mapping_rule['data_source']),
                          delimiter=delimiter,
