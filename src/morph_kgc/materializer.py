@@ -41,7 +41,6 @@ def _retrieve_rdb_integer_references(config, mapping_rule, references):
 def _preprocess_data(data, mapping_rule, references, config):
     # keep only reference columns in the dataframe
     data = data[list(references)]
-    print(type(data))
 
     # deal with ORACLE
     if mapping_rule['source_type'] == RDB:
@@ -49,8 +48,8 @@ def _preprocess_data(data, mapping_rule, references, config):
             data = normalize_oracle_identifier_casing(data, references)
 
     # remove NULLS for those data formats that do not allow to remove them at reading time
-    if config.apply_na_filter():
-        data = remove_null_values_from_dataframe(data, config)
+    #if config.apply_na_filter():
+    #    data = remove_null_values_from_dataframe(data, config)
 
     if mapping_rule['source_type'] == RDB:
         # deal with integers
@@ -310,7 +309,6 @@ class Materializer:
 
     def __init__(self, mappings_df, config):
         self.mappings_df = mappings_df
-        print('a')
         self.config = config
 
         self.subject_maps_df = get_subject_maps(mappings_df)
