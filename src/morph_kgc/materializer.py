@@ -242,7 +242,7 @@ def _materialize_mapping_rule_terms(results_df, mapping_rule, config):
         elif pd.notna(mapping_rule['graph_reference']):
             results_df = _materialize_reference(results_df, mapping_rule['graph_reference'], config, termtype=R2RML_IRI)
 
-    return set(results_df['triple'])
+    return set(results_df['triple'].to_arrow().to_pylist())
 
 
 def _merge_data(data, parent_data, mapping_rule):
