@@ -113,14 +113,8 @@ def _materialize_template(results_df, template, config, columns_alias='', termty
     for reference in references:
         results_df['reference_results'] = results_df[columns_alias + reference]
 
-        if config.only_write_printable_characters():
-            results_df['reference_results'] = results_df['reference_results'].apply(lambda x: remove_non_printable_characters(x))
-
         if str(termtype).strip() == R2RML_IRI:
-            if config.get_safe_percent_encoding():
-                results_df['reference_results'] = results_df['reference_results'].apply(lambda x: quote(x, safe=config.get_safe_percent_encoding()))
-            else:
-                results_df['reference_results'] = results_df['reference_results'].apply(lambda x: encode_value(x))
+            results_df['reference_results'] = results_df['reference_results'].str.replace(':', '%3A', regex=False).str.replace('/', ' 	%2F', regex=False).str.replace('?', '%3F', regex=False).str.replace('#', '%23', regex=False).str.replace('[', '%5B', regex=False).str.replace(']', '%5D', regex=False).str.replace('@', '%40', regex=False).str.replace('!', '%21', regex=False).str.replace('$', '%24', regex=False).str.replace('&', '%26', regex=False).str.replace("'", '%27', regex=False).str.replace('(', '%28', regex=False).str.replace(')', '%29', regex=False).str.replace('*', '%2A', regex=False).str.replace('+', '%2B', regex=False).str.replace(',', '%2C', regex=False).str.replace(';', '%3B', regex=False).str.replace('=', '%3D', regex=False).str.replace('%', '%25', regex=False).str.replace(' ', '%20', regex=False)
         elif str(termtype).strip() == R2RML_LITERAL:
             results_df['reference_results'] = results_df['reference_results'].str.replace('\\', '\\\\', regex=False).str.replace('\n', '\\n', regex=False).str.replace('\t', '\\t', regex=False).str.replace('\b', '\\b', regex=False).str.replace('\f', '\\f', regex=False).str.replace('\r', '\\r', regex=False).str.replace('"', '\\"', regex=False).str.replace("'", "\\'", regex=False)
 
@@ -151,9 +145,6 @@ def _materialize_reference(results_df, reference, config, columns_alias='', term
                            language_tag='', datatype=''):
     results_df['reference_results'] = results_df[columns_alias + str(reference)]
 
-    if config.only_write_printable_characters():
-        results_df['reference_results'] = results_df['reference_results'].apply(lambda x: remove_non_printable_characters(x))
-
     if str(termtype).strip() == R2RML_LITERAL:
         results_df['reference_results'] = results_df['reference_results'].str.replace('\\', '\\\\', regex=False).str.replace('\n', '\\n', regex=False).str.replace('\t', '\\t', regex=False).str.replace('\b', '\\b', regex=False).str.replace('\f', '\\f', regex=False).str.replace('\r', '\\r', regex=False).str.replace('"', '\\"', regex=False).str.replace("'", "\\'", regex=False)
         results_df['triple'] = results_df['triple'] + '"' + results_df['reference_results'] + '"'
@@ -164,8 +155,6 @@ def _materialize_reference(results_df, reference, config, columns_alias='', term
         else:
             results_df['triple'] = results_df['triple'] + ' '
     elif str(termtype).strip() == R2RML_IRI:
-        # it is assumed that the IRI values will be correct, and they are not percent encoded
-        results_df['reference_results'] = results_df['reference_results'].apply(lambda x: x.strip())
         results_df['triple'] = results_df['triple'] + '<' + results_df['reference_results'] + '> '
     elif str(termtype).strip() == R2RML_BLANK_NODE:
         results_df['triple'] = results_df['triple'] + '_:' + results_df['reference_results'] + ' '
